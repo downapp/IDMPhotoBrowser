@@ -8,7 +8,10 @@
 
 import UIKit
 
-class MenuViewController: UITableViewController, IDMPhotoBrowserDelegate { }
+class MenuViewController: UITableViewController, IDMPhotoBrowserDelegate {
+    var browser: IDMPhotoBrowser!
+    
+}
 
 // MARK: View Lifecycle
 
@@ -59,7 +62,7 @@ extension MenuViewController {
 // MARK: Actions
 
 extension MenuViewController {
-	func buttonWithImageOnScreenPressed(sender: AnyObject) {
+    @objc func buttonWithImageOnScreenPressed(sender: AnyObject) {
 		let buttonSender = sender as? UIButton
 		
 		// Create an array to store IDMPhoto objects
@@ -223,7 +226,7 @@ extension MenuViewController {
 		}
 
 		// Create and setup browser
-		let browser = IDMPhotoBrowser.init(photos: photos)
+		browser = IDMPhotoBrowser.init(photos: photos)
 		browser?.delegate = self
 
 		if indexPath.section == 1 { // Multiple photos
@@ -257,22 +260,22 @@ extension MenuViewController {
 extension MenuViewController {
 	func photoBrowser(_ photoBrowser: IDMPhotoBrowser!, didShowPhotoAt index: UInt) {
 		let photo: IDMPhoto = photoBrowser.photo(at: index) as! IDMPhoto
-		print("Did show photoBrowser with photo index: \(index), photo caption: \(photo.caption)")
+        print("Did show photoBrowser with photo index: \(index), photo caption: \(String(describing: photo.caption))")
 	}
 	
 	func photoBrowser(_ photoBrowser: IDMPhotoBrowser!, willDismissAtPageIndex index: UInt) {
 		let photo: IDMPhoto = photoBrowser.photo(at: index) as! IDMPhoto
-		print("Will dismiss photoBrowser with photo index: \(index), photo caption: \(photo.caption)")
+        print("Will dismiss photoBrowser with photo index: \(index), photo caption: \(String(describing: photo.caption))")
 	}
 	
 	func photoBrowser(_ photoBrowser: IDMPhotoBrowser!, didDismissAtPageIndex index: UInt) {
 		let photo: IDMPhoto = photoBrowser.photo(at: index) as! IDMPhoto
-		print("Did dismiss photoBrowser with photo index: \(index), photo caption: \(photo.caption)")
+        print("Did dismiss photoBrowser with photo index: \(index), photo caption: \(photo.caption ?? "error")")
 	}
 	
 	func photoBrowser(_ photoBrowser: IDMPhotoBrowser!, didDismissActionSheetWithButtonIndex buttonIndex: UInt, photoIndex: UInt) {
 		let photo: IDMPhoto = photoBrowser.photo(at: buttonIndex) as! IDMPhoto
-		print("Did dismiss photoBrowser with photo index: \(buttonIndex), photo caption: \(photo.caption)")
+        print("Did dismiss photoBrowser with photo index: \(buttonIndex), photo caption: \(String(describing: photo.caption))")
 		
 		UIAlertView(title: "Option \(buttonIndex+1)", message: nil, delegate: nil, cancelButtonTitle: "OK").show()
 	}
