@@ -75,6 +75,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	// iOS 7
     UIViewController *_applicationTopViewController;
     int _previousModalPresentationStyle;
+    
 }
 
 // Private Properties
@@ -652,6 +653,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _displayArrowButton = false;
         _displayActionButton = false;
         _displayCounterLabel = false;
+        _autoHideInterface = false;
     }
 
     UIImage *leftButtonImage = (_leftArrowImage == nil) ?
@@ -796,7 +798,10 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
     // Done button
     _doneButton.frame = [self frameForDoneButtonAtOrientation:currentOrientation];
-
+    if (_displayNewLayout) {
+        CGRect newFrame = CGRectMake(20, _doneButton.frame.origin.y, _doneButton.frame.size.width,_doneButton.frame.size.height);
+        _doneButton.frame = newFrame;
+    }
 
     // Remember index
 	NSUInteger indexPriorToLayout = _currentPageIndex;
