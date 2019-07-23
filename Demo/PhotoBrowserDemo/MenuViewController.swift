@@ -108,7 +108,7 @@ extension MenuViewController {
 		browser.usePopAnimation = true
 		browser.scaleImage = buttonSender?.currentImage
 		browser.dismissOnTouch = true
-		
+        browser.displayNewLayout = true
 		// Show
 		self.present(browser, animated: true, completion: nil)
 	}
@@ -247,7 +247,7 @@ extension MenuViewController {
 				browser?.trackTintColor          = UIColor.init(white: 0.8, alpha: 1)
 			}
 		}
-		
+//        browser!.displayNewLayout = true;
 		// Show
 		present(browser!, animated: true, completion: nil)
 		
