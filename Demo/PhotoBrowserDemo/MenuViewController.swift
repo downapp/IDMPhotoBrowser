@@ -247,7 +247,7 @@ extension MenuViewController {
 				browser?.trackTintColor          = UIColor.init(white: 0.8, alpha: 1)
 			}
 		}
-//        browser!.displayNewLayout = true;
+        browser!.displayNewLayout = true;
 		// Show
 		present(browser!, animated: true, completion: nil)
 		

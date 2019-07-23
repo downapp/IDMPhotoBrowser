@@ -75,6 +75,7 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 	// iOS 7
     UIViewController *_applicationTopViewController;
     int _previousModalPresentationStyle;
+    UIPageControl *_totalPages;
     
 }
 
@@ -654,6 +655,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         _displayActionButton = false;
         _displayCounterLabel = false;
         _autoHideInterface = false;
+        _totalPages = [[UIPageControl alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width-120, [self getSafeY], 100, 30)];
+        [_totalPages setPageIndicatorTintColor:[[UIColor whiteColor] colorWithAlphaComponent:0.6]];
+        [_totalPages setCurrentPageIndicatorTintColor:[UIColor colorWithRed:0.92 green:0.20 blue:0.35 alpha:1]];
     }
 
     UIImage *leftButtonImage = (_leftArrowImage == nil) ?
@@ -799,8 +803,12 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     // Done button
     _doneButton.frame = [self frameForDoneButtonAtOrientation:currentOrientation];
     if (_displayNewLayout) {
-        CGRect newFrame = CGRectMake(20, _doneButton.frame.origin.y, _doneButton.frame.size.width,_doneButton.frame.size.height);
+        CGRect newFrame = CGRectMake(20, [self getSafeY], _doneButton.frame.size.width,_doneButton.frame.size.height);
         _doneButton.frame = newFrame;
+        _totalPages.numberOfPages = _photos.count;
+        CGFloat expectedSize = _photos.count*25;
+        CGRect pagesFrame = CGRectMake([UIScreen mainScreen].bounds.size.width-(expectedSize+20), [self getSafeY], expectedSize,30);
+        _totalPages.frame = pagesFrame;
     }
 
     // Remember index
@@ -855,6 +863,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if(_displayDoneButton && !self.navigationController.navigationBar)
         [self.view addSubview:_doneButton];
 
+    if(_displayNewLayout) {
+      [self.view addSubview:_totalPages];
+    }
     // Toolbar items & navigation
     UIBarButtonItem *fixedLeftSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
                                                                                     target:self action:nil];
@@ -1210,6 +1221,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 
         if(_arrowButtonsChangePhotosAnimated) [self updateToolbar];
     }
+    if(_displayNewLayout) {
+        [self updatePageControlIndex:scrollView];
+    }
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -1217,11 +1231,26 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
     if(_autoHideInterface){
         [self setControlsHidden:YES animated:YES permanent:NO];
     }
+    if(_displayNewLayout) {
+        [self updatePageControlIndex:scrollView];
+    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	// Update toolbar when page changes
 	if(! _arrowButtonsChangePhotosAnimated) [self updateToolbar];
+    
+    if(_displayNewLayout) {
+        [self updatePageControlIndex:scrollView];
+    }
+}
+
+#pragma mark - PageContol
+
+-(void) updatePageControlIndex:(UIScrollView *) scrollView {
+    CGFloat offset = scrollView.contentOffset.x;
+    NSInteger row = offset / scrollView.frame.size.width;
+    [_totalPages setCurrentPage:row];
 }
 
 #pragma mark - Toolbar
@@ -1342,6 +1371,9 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
         [self jumpToPageAtIndex:index];
         if (!_viewIsActive) [self tilePages]; // Force tiling if view is not visible
     }
+    if (_displayNewLayout) {
+        _totalPages.currentPage = index;
+    }
 }
 
 #pragma mark - Buttons
@@ -1448,5 +1480,17 @@ NSLocalizedStringFromTableInBundle((key), nil, [NSBundle bundleWithPath:[[NSBund
 			completion();
 		}];
 	}
+}
+
+-(CGFloat ) getSafeY {
+    CGFloat addition = 0;
+    if (@available(iOS 11.0, *)) {
+        if (UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom > 0) {
+            addition = 20;
+        }
+    } else {
+        addition = 0;
+    }
+    return 20+addition;
 }
 @end
