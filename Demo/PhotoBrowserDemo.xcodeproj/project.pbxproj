@@ -374,13 +374,13 @@
 			};
 			buildConfigurationList = 4C6F978714AF734800F8389A /* Build configuration list for PBXProject "PhotoBrowserDemo" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				fr,
 				pt,
+				Base,
 			);
 			mainGroup = 4C6F978214AF734800F8389A;
 			productRefGroup = 4C6F978E14AF734900F8389A /* Products */;
